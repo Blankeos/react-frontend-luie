@@ -1,24 +1,45 @@
 import axios from "axios";
 import Login from "../components/Auth/Login";
 import SignUp from "../components/Auth/SignUp";
-import credChecker from "../services/isLoggedIn";
+import { useState, useEffect } from "react";
+import apiClient from "../services/api";
+import Logout from "../components/Auth/Logout";
 
-function Home() {
-  const handleLogout = e => {
-    apiClient.post('/logout')
-    .then(response => {
-        console.log(response)
-        credChecker.setIsLoggedIn(false)
+function Home(prop) {
+  const [user, setUser] = useState([]);
+
+  useEffect(() => {
+    apiClient.get('/sanctum/csrf-cookie')
+    .then(() => {
+        apiClient.get('/api/get-user')
+        .then(response => {
+            setUser(response.data)
+        })
+        .catch(e => {
+          console.log("Please login")
+        })
     })
-  }
+  }, [])
+
+  // console.log(user)
+
+  const userData = user.map((data) =>
+      <li key={data.id}>{data.email} + {data.name}</li>
+  )
 
   return (
     <main>
-      <Login />
-      <hr />
-      <form action="" onSubmit={handleLogout}>
-        <button type="submit">Logout</button>
-      </form>
+      {
+        user.length === 0
+        ? <Login />
+        : <>
+          <Logout />
+          <ul>
+            {userData}
+          </ul>
+        </>
+
+      }
     </main>
   )
 }

@@ -1,6 +1,6 @@
 import apiClient from "../../services/api";
 import React, { useState } from "react";
-import credChecker from "../../services/isLoggedIn";
+import ReactSession from 'react-client-session';
 
 const Login = (props) => {
     const [email, setEmail] = useState("")
@@ -13,18 +13,19 @@ const Login = (props) => {
             apiClient.post('/login', {
                 email: email,
                 password: password
-            }).then(response => {
-                // console.log(response)
-                // credChecker.setLoggedIn(true)
+            })
+            .then(response => {
+                console.log("Logged in Successfuly")
+                // apiClient.get('/api/get-user')
+                // .then(response => {
+                //     // console.log(response)
+                // })
             })
         });
     }
 
     return (
         <>
-            {/* <div className="">
-                <h2>You are logged in</h2>
-            </div> */}
             <form className="" onSubmit={handleSubmit}>
                 <h2>Login</h2>
                 <div className="form-group">
